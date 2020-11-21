@@ -1,0 +1,11 @@
+{
+  "name": "courscode",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "git@github.com:marietoulemonde/courscode.git",
+  "author": "Remy Dragyn <remy.dragyn@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "d3": "^6.2.0"
+  }
+}
