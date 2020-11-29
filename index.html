@@ -7,75 +7,112 @@
   <title>Document</title>
   <!-- Pour avoir accès à toutes les fonctionnalités de d3js -->
   <script src="https://d3js.org/d3.v6.js"></script>
+  <style>
+    .my-svg,
+    .my-second-svg {
+      width: 700px;
+    }
+  </style>
 </head>
 
 <body>
-
   <a href="https://observablehq.com/@d3/lets-make-a-bar-chart" target="_blank"
     rel="noopener noreferrer">Let's make a bar
     chart (part 1)</a>
 
+  <div>
+    <svg class="my-svg"></svg>
+  </div>
+  <div>
+    <svg class="my-second-svg"></svg>
+  </div>
+
 </body>
 
 <script>
-  
-  chart = {
-  const svg = d3.create("svg")
-      .attr("viewBox", [0, 0, width, height]);
 
-  svg.append("g")
-      .attr("fill", color)
-    .selectAll("rect")
-    .data(data)
-    .join("rect")
-      .attr("x", (d, i) => x(i))
-      .attr("y", d => y(d.value))
-      .attr("height", d => y(0) - y(d.value))
-      .attr("width", x.bandwidth());
+  const color = "steelblue";
+  const height = 500;
+  const width = 600;
+  const margin = ({ top: 30, right: 0, bottom: 30, left: 40 });
+  const data = [
+    { letter: "A", frequency: "0.08167" },
+    { letter: "B", frequency: "0.01492" },
+    { letter: "C", frequency: "0.02782" },
+    { letter: "D", frequency: "0.04253" },
+    { letter: "E", frequency: "0.12702" },
+    { letter: "F", frequency: "0.02288" },
+    { letter: "G", frequency: "0.02015" },
+    { letter: "H", frequency: "0.06094" },
+    { letter: "I", frequency: "0.06966" },
+    { letter: "J", frequency: "0.00153" },
+    { letter: "K", frequency: "0.00772" },
+    { letter: "L", frequency: "0.04025" },
+    { letter: "M", frequency: "0.02406" },
+    { letter: "N", frequency: "0.06749" },
+    { letter: "O", frequency: "0.07507" },
+    { letter: "P", frequency: "0.01929" },
+    { letter: "Q", frequency: "0.00095" },
+    { letter: "R", frequency: "0.05987" },
+    { letter: "S", frequency: "0.06327" },
+    { letter: "T", frequency: "0.09056" },
+    { letter: "U", frequency: "0.02758" },
+    { letter: "V", frequency: "0.00978" },
+    { letter: "W", frequency: "0.0236" },
+    { letter: "X", frequency: "0.0015" },
+    { letter: "Y", frequency: "0.01974" },
+    { letter: "Z", frequency: "0.00074" },
+  ];
 
-  svg.append("g")
-      .call(xAxis);
+  // data.sort((a, b) => d3.descending(+a.frequency, +b.frequency));
 
-  svg.append("g")
-      .call(yAxis);
-
-  return svg.node();
-}
-  data = Object.assign(d3.csvParse(await FileAttachment("alphabet.csv").text(), ({letter, frequency}) => ({name: letter, value: +frequency})).sort((a, b) => d3.descending(a.value, b.value)), {format: "%", y: "↑ Frequency"})
-  
-  x = d3.scaleBand()
+  const x = d3.scaleBand()
     .domain(d3.range(data.length))
     .range([margin.left, width - margin.right])
-    .padding(0.1)
-  
-  y = d3.scaleLinear()
-    .domain([0, d3.max(data, d => d.value)]).nice()
-    .range([height - margin.bottom, margin.top])
-  
-  xAxis = g => g
+    .padding(0.1);
+
+  const y = d3.scaleLinear()
+    .domain([0, d3.max(data, d => +d.frequency)]).nice()
+    .range([height - margin.bottom, margin.top]);
+
+  const xAxis = (g) => g
     .attr("transform", `translate(0,${height - margin.bottom})`)
-    .call(d3.axisBottom(x).tickFormat(i => data[i].name).tickSizeOuter(0))
-  
-  yAxis = g => g
+    .call(d3.axisBottom(x).tickFormat(i => data[i].letter).tickSizeOuter(0))
+
+  const yAxis = (g) => g
     .attr("transform", `translate(${margin.left},0)`)
     .call(d3.axisLeft(y).ticks(null, data.format))
     .call(g => g.select(".domain").remove())
     .call(g => g.append("text")
-        .attr("x", -margin.left)
-        .attr("y", 10)
-        .attr("fill", "currentColor")
-        .attr("text-anchor", "start")
-        .text(data.y))
-  
-  color = "steelblue"
-  height = 500
-  margin = ({top: 30, right: 0, bottom: 30, left: 40})
-  
-  d3 = require("d3@6")
-  
-  console.log("code ici pour plus de simplicité")
-  console.log(d3);
-  
+      .attr("x", -margin.left)
+      .attr("y", 10)
+      .attr("fill", "currentColor")
+      .attr("text-anchor", "start")
+      .text(data.y))
+
+  function createChart(svgname, dataParam) {
+    const svg = d3.select(svgname)
+      .attr("viewBox", [0, 0, width, height]);
+
+    svg.append("g")
+      .selectAll("rect")
+      .data(dataParam)
+      .join("rect")
+      .attr("fill", color)
+      .attr("x", (d, i) => x(i))
+      .attr("y", d => y(+d.frequency))
+      .attr("height", d => y(0) - y(+d.frequency))
+      .attr("width", x.bandwidth());
+
+    svg.append("g")
+      .call(xAxis);
+
+    svg.append("g")
+      .call(yAxis);
+  };
+
+  createChart(".my-svg", data);
+
 </script>
 
 </html>
