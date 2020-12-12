@@ -29,7 +29,7 @@
 
 </body>
 
-<script>
+<!-- <script>
 
   const color = "steelblue";
   const height = 500;
@@ -113,6 +113,162 @@
 
   createChart(".my-svg", data);
 
-</script>
+</script> -->
+
+<script>
+
+    const color = "red";
+    const height = 500;
+    const width = 600;
+    const margin = ({ top: 30, right: 0, bottom: 30, left: 40 });
+    const data = [
+  {
+    "Pays": "Afrique du Sud",
+    "Age": "68"
+  },
+  {
+    "Pays": "Algérie",
+    "Age": "75"
+  },
+  {
+    "Pays": "Angola",
+    "Age": "67"
+  },
+  {
+    "Pays": "Bénin",
+    "Age": "63"
+  },
+  {
+    "Pays": "Burkina Faso",
+    "Age": "64"
+  },
+  {
+    "Pays": "Burundi",
+    "Age": "116"
+  },
+  {
+    "Pays": "Cameroun",
+    "Age": "88"
+  },
+  {
+    "Pays": "Cap-Vert",
+    "Age": "70"
+  },
+  {
+    "Pays": "Centrafrique",
+    "Age": "64"
+  },
+  {
+    "Pays": "Comores",
+    "Age": "62"
+  },
+  {
+    "Pays": "Congo",
+    "Age": "77"
+  },
+  {
+    "Pays": "Côte d’Ivoire",
+    "Age": "79"
+  },
+  {
+    "Pays": "Djibouti",
+    "Age": "73"
+  },
+  {
+    "Pays": "Égypte",
+    "Age": "66"
+  },
+  {
+    "Pays": "Érythrée",
+    "Age": "75"
+  },
+  {
+    "Pays": "Eswatini",
+    "Age": "53"
+  },
+  {
+    "Pays": "Éthiopie",
+    "Age": "71"
+  },
+  {
+    "Pays": "Gabon",
+    "Age": "62"
+  },
+  {
+    "Pays": "Gambie",
+    "Age": "56"
+  },
+  {
+    "Pays": "Ghana",
+    "Age": "77"
+  },
+  {
+    "Pays": "Guinée",
+    "Age": "83"
+  },
+  {
+    "Pays": "Guinée équatoriale",
+    "Age": "79"
+  },
+  {
+    "Pays": "Guinée-Bissau",
+    "Age": "48"
+  },
+  {
+    "Pays": "Kenya",
+    "Age": "59"
+  }
+  
+]
+    // data.sort((a, b) => d3.descending(+a.Age, +b.Age));
+  
+    const x = d3.scaleBand()
+      .domain(d3.range(data.length))
+      .range([margin.left, width - margin.right])
+      .padding(0.1);
+  
+    const y = d3.scaleLinear()
+      .domain([0, d3.max(data, d => +d.Age)]).nice()
+      .range([height - margin.bottom, margin.top]);
+  
+    const xAxis = (g) => g
+      .attr("transform", `translate(0,${height - margin.bottom})`)
+      .call(d3.axisBottom(x).tickFormat(i => data[i].Pays).tickSizeOuter(0))
+  
+    const yAxis = (g) => g
+      .attr("transform", `translate(${margin.left},0)`)
+      .call(d3.axisLeft(y).ticks(null, data.format))
+      .call(g => g.select(".domain").remove())
+      .call(g => g.append("text")
+        .attr("x", -margin.left)
+        .attr("y", 10)
+        .attr("fill", "currentColor")
+        .attr("text-anchor", "start")
+        .text(data.y))
+  
+    function createChart(svgname, dataParam) {
+      const svg = d3.select(svgname)
+        .attr("viewBox", [0, 0, width, height]);
+  
+      svg.append("g")
+        .selectAll("rect")
+        .data(dataParam)
+        .join("rect")
+        .attr("fill", color)
+        .attr("x", (d, i) => x(i))
+        .attr("y", d => y(+d.Age))
+        .attr("height", d => y(0) - y(+d.Age))
+        .attr("width", x.bandwidth());
+  
+      svg.append("g")
+        .call(xAxis);
+  
+      svg.append("g")
+        .call(yAxis);
+    };
+  
+    createChart("my-svg", data);
+  
+  </script>
 
 </html>
